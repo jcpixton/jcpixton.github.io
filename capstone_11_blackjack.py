@@ -39,6 +39,12 @@ def adjust_ace_value(hand):
             hand[i] = "Ace (1)"  # Marking Ace as 1 for printing
     return hand
 
+def adjust_ace_value_house(hand):
+    for i, card in enumerate(hand):
+        if card == "Ace" and calculate_hand_total(hand) > 21 and calculate_hand_total(hand) > 10:
+            hand[i] = "Ace (1)"  # Marking Ace as 1 for printing
+    return hand
+
 def blackjack():
     player_hand = []
     house_hand = []
@@ -56,6 +62,8 @@ def blackjack():
     playing = True
     
     while playing:
+        if player_hand[0] == "Ace" and player_hand[1] == "Ace":
+            adjust_ace_value(player_hand[0])
         if calculate_hand_total(player_hand) <= 21:
             print(f"Your hand: {print_hand(player_hand)}, current score: {calculate_hand_total(player_hand)}")
             print(f"House hand: {print_hand([house_hand[0]])} & X")     
@@ -69,11 +77,13 @@ def blackjack():
             playing = False             
     while calculate_hand_total(house_hand) < 17 and calculate_hand_total(player_hand) < 22:
         shuffled_deck, house_hand = deal_card(shuffled_deck, house_hand)
+        house_hand = adjust_ace_value_house(house_hand)
     
     player_final_score = calculate_hand_total(player_hand)
     house_final_score = calculate_hand_total(house_hand)
     print(f"Your hand: {print_hand(player_hand)}, final score: {player_final_score}")
     print(f"House hand: {print_hand(house_hand)}, final score: {house_final_score}")
+    
     if player_final_score > 21:
         print("You busted!:( You lose.")
     elif player_final_score == house_final_score:
